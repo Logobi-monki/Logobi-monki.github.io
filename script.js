@@ -81,6 +81,7 @@ function showToggleToast(isDark) {
   toast.style.zIndex = "9999";
   toast.style.opacity = "0";
   toast.style.transition = "opacity 0.3s ease";
+  toast.style.border = isDark ? "1.5px solid rgba(255, 255, 255, 0.75)" : "1.5px solid rgba(0, 0, 0, 0.75)";
   document.body.appendChild(toast);
   requestAnimationFrame(() => {
     toast.style.opacity = "1";
@@ -130,8 +131,14 @@ function animateLogoClick() {
   body.classList.add("spin");
   logo.style.transition = "transform 0.3s ease";
   logo.style.transform = "translateY(-20px)";
+  if (body.classList.contains("dark-mode")) {
+    body.style.border = "2px solid white";
+  } else {
+    body.style.border = "2px solid black";
+  }
   logoAnimTimeout = setTimeout(() => {
     logo.style.transform = "translateY(0)";
+    body.style.border = "";
   }, 300);
 }
 
