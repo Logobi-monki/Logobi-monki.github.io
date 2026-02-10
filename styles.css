@@ -47,6 +47,7 @@ body.dark-mode {
   object-fit: cover;
   border-radius: 10%;
   cursor: pointer;
+  margin-top: 15px;
 }
 
 .top-nav {
@@ -54,6 +55,7 @@ body.dark-mode {
   gap: 16px;
   align-items: center;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .top-link {
@@ -250,6 +252,21 @@ body.spin {
 
   nav a {
     margin: 8px 0 0 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .header {
+    flex-direction: column;
+  }
+  
+  .top-nav {
+    flex-direction: column;
+    margin-bottom: 30px;
+  }
+  
+  .top-link {
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.85);
   }
 }
 
