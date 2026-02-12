@@ -56,6 +56,7 @@ body.dark-mode {
   align-items: center;
   flex-wrap: wrap;
   margin-top: 20px;
+  margin-left: 100px;
 }
 
 .top-link {
@@ -234,6 +235,8 @@ p, li {
   text-decoration: none;
   line-height: 40px;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background 0.3s ease-in-out;
+  margin-left: 100px;
+  
 }
 
 .lang-button:hover {
@@ -242,6 +245,10 @@ p, li {
   border-color: #2563eb;
   transform: scale(1.05);
   transform: translateY(-2px);
+}
+
+.lang-button:active {
+  opacity: 0.8;
 }
 
 
@@ -259,7 +266,7 @@ body.spin {
   to { transform: rotate(360deg); }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .text-image, .image-text {
     flex-direction: column;
   }
@@ -280,6 +287,15 @@ body.spin {
 
   nav a {
     margin: 8px 0 0 0;
+  }
+  
+  .top-nav {
+    margin-left: 0;
+  }
+  
+  .lang-button {
+    margin-left: 10px;
+    margin-bottom: 20px;
   }
 }
 
