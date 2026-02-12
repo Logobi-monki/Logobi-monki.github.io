@@ -251,6 +251,27 @@ p, li {
   opacity: 0.8;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border-bottom: 2px solid #000;
+  flex-wrap: wrap;
+}
+
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between lang button and toggle */
+  margin-left: auto; /* push right-controls to far right */
+}
+
+.lang-button {
+  margin-left: 0; /* remove existing large margin */
+}
 
 @keyframes ball-spin {
   from { transform: rotate(0deg) scale(1.32); }
@@ -291,13 +312,28 @@ body.spin {
   
   .top-nav {
     margin-left: 0;
+    margin-bottom: 50px;
   }
   
   .lang-button {
     margin-left: 10px;
     margin-bottom: 20px;
   }
+  
+  .right-controls {
+    display: flex;
+    flex-direction: row;
+    vertical-align: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    position: absolute;
+    top: 200px;
+  }
 }
+
+
+
 
 @media (max-width: 700px) {
   .header {
@@ -360,14 +396,37 @@ body.spin {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    justify-content: center;
   }
 
   .top-nav {
     justify-content: center;
+    margin-bottom: 100px;
   }
   
   .lang-button {
     margin-bottom: 15px;
+  }
+  
+  .right-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+    position: absolute;
+    top: 10px;
+  }
+  .right-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+    position: absolute;
+    top: 370px; /* or a value like 0px or 10px to go even lower */
   }
 }
 
