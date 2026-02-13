@@ -218,17 +218,20 @@ p, li {
   object-fit: cover;
 }
 
-.lang-container {
-  justify-content: flex-end;
+abbr {
+  text-decoration: none !important;
+  border-bottom: none !important;
 }
 
 .lang-button {
+  display: block;
   width: 45px;
   height: 45px;
   padding: 0;
   color: black;
   background: white;
   border: 2px solid black;
+  box-sizing: border-box;
   border-radius: 50%;
   font-size: 20px;
   text-align: center;
@@ -236,7 +239,6 @@ p, li {
   line-height: 40px;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background 0.3s ease-in-out;
   margin-left: 100px;
-  
 }
 
 .lang-button:hover {
@@ -265,12 +267,12 @@ p, li {
 .right-controls {
   display: flex;
   align-items: center;
-  gap: 12px; /* space between lang button and toggle */
-  margin-left: auto; /* push right-controls to far right */
+  gap: 12px;
+  margin-left: auto;
 }
 
 .lang-button {
-  margin-left: 0; /* remove existing large margin */
+  margin-left: 0;
 }
 
 @keyframes ball-spin {
@@ -426,7 +428,7 @@ body.spin {
     gap: 12px;
     text-align: center;
     position: absolute;
-    top: 370px; /* or a value like 0px or 10px to go even lower */
+    top: 370px;
   }
 }
 
