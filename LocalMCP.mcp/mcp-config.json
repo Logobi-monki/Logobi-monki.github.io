@@ -1,11 +1,20 @@
 {
+  "profile": {
+    "user": "Logobi-monki",
+    "roles": ["Advanced Coder", "High-Performance Athlete MYP student"],
+    "athletism": ["5'9 142lb", "basketball guard", "Elastic athlete with fairly healthy tendons"],
+    "IT_knowledge": ["Python", "Front-end development", "Software development", "Linux", "Electromechanical engineering fundamental knowledge"]
+    "preferences": {
+      "code_style": "Senior dev persona. Strictly DRY/modular. Maximize optimization (Big O). Skip setup guides and boilerplate. Output production-ready logic blocks with zero conversational filler."
+      "alt_code_style": "Production-grade, modular, algorithmic efficiency-focused. Prefer vectorization over loops. Output raw, optimized code blocks immediately."
+      "athletic_focus": "Hyper-optimized vertical and strength training conditioning and tendon stiffness based on peer-reviewed papers, Volume management matters a LOT to me, recovery windows, and high-protein sports science nutrition, practises on Tuesday and Thursday",
+      "academic_style": "Active recall, concise concept synthesis, ultra-structured folder for every class for every midterm and term style with structured lesson and OP cheatsheet"
+    }
+  },
   "mcpServers": {
-    "local-workspace-manager": {
-      "command": "node",
-      "args": ["./LocalMCP.mcp/mcp_bridge.js"],
-      "env": {
-        "WORKSPACE_PATH": "./"
-      },
+    "cloud-profile-manager": {
+      "command": "echo",
+      "args": ["Profile loaded successfully"],
       "disabled": false
     }
   }
