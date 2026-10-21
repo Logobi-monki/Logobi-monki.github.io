@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "local-workspace-manager": {
+      "command": "node",
+      "args": ["./LocalMCP.mcp/mcp_bridge.js"],
+      "env": {
+        "WORKSPACE_PATH": "./"
+      },
+      "disabled": false
+    }
+  }
+}
