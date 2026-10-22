@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>MYP Academic Copilot — Secure connection</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; background: Canvas; color: CanvasText; }
+    main { width: min(100% - 32px, 620px); margin: 8vh auto; }
+    .panel { padding: clamp(22px, 5vw, 38px); border: 1px solid color-mix(in srgb, CanvasText 18%, transparent); border-radius: 20px; }
+    .eyebrow { font-size: .78rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+    h1 { margin: 10px 0; font-size: clamp(1.8rem, 6vw, 2.5rem); line-height: 1.08; }
+    .muted { opacity: .75; line-height: 1.55; }
+    .notice { margin: 20px 0; padding: 16px; border-radius: 12px; background: color-mix(in srgb, CanvasText 6%, Canvas); line-height: 1.5; }
+    label { display: block; margin: 14px 0 6px; font-weight: 650; }
+    input { box-sizing: border-box; width: 100%; padding: 12px 13px; border: 1px solid color-mix(in srgb, CanvasText 28%, transparent); border-radius: 10px; background: Canvas; color: CanvasText; font: inherit; }
+    button { border: 0; padding: 12px 16px; border-radius: 10px; font: inherit; font-weight: 750; cursor: pointer; }
+    button:disabled { cursor: progress; opacity: .6; }
+    .primary { background: #1e6bff; color: white; }
+    .secondary { background: color-mix(in srgb, CanvasText 9%, Canvas); color: CanvasText; border: 1px solid color-mix(in srgb, CanvasText 20%, transparent); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .status { min-height: 1.4em; margin-top: 14px; line-height: 1.45; }
+    .status.error { color: #c43a31; }
+    .hidden { display: none !important; }
+    ul { padding-left: 22px; line-height: 1.7; }
+    code { overflow-wrap: anywhere; }
+    footer { margin: 22px 4px; font-size: .85rem; opacity: .66; line-height: 1.5; }
+  </style>
+</head>
+<body>
+<main>
+  <section class="panel">
+    <div class="eyebrow">MYP / PÉI workspace</div>
+    <h1>Connect your school workspace</h1>
+    <p class="muted">Sign in to the school account you want to connect. Review the requesting app and approve only if you trust it.</p>
+
+    <div id="authPanel" class="hidden">
+      <h2>Sign in or create an account</h2>
+      <form id="authForm">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="username" required maxlength="254">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128">
+        <div class="actions">
+          <button class="primary" type="submit" id="signInButton">Sign in</button>
+          <button class="secondary" type="button" id="signUpButton">Create account</button>
+        </div>
+      </form>
+      <p class="muted">Use an email address you control. If email confirmation is enabled, follow the confirmation link and return to this page.</p>
+    </div>
+
+    <div id="consentPanel" class="hidden">
+      <h2 id="requestTitle">An app is requesting access</h2>
+      <p class="muted">Confirm that the requesting app and redirect address below look right before approving.</p>
+      <div class="notice"><strong>What you are authorizing</strong><br>
+        MYP Academic Copilot can read and manage the school workspace connected to this account: subjects, assignments and deadlines, grades, study sessions, PEI/MYP projects, profile, and preferences. Depending on the tools you use, this includes creating, updating, and deleting school records. Only approve if that is what you expect.
+      </div>
+      <p><strong>Requesting app:</strong> <span id="clientName">Loading…</span></p>
+      <p><strong>Redirect address:</strong> <code id="redirectUri">Loading…</code></p>
+      <div id="scopeBlock" class="hidden"><strong>Requested identity permissions</strong><ul id="scopes"></ul></div>
+      <div class="actions">
+        <button class="primary" id="approveButton" type="button">Approve and connect</button>
+        <button class="secondary" id="denyButton" type="button">Deny</button>
+        <button class="secondary" id="signOutButton" type="button">Sign out</button>
+      </div>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </section>
+  <footer>Secure sign-in is handled by Supabase Auth. This page uses a public/publishable API key only; never enter a Supabase service-role key or paste access tokens into chat. Connection setup may not work until the project owner enables OAuth 2.1 and Dynamic Client Registration in Supabase.</footer>
+</main>
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const SUPABASE_URL = "https://ueqqoyhtwnfhggrefyxq.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_SzKkl3N--B9_Z-1PpPnztg_eXyy6RWV";
+  const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const authorizationId = params.get("authorization_id");
+  const authPanel = document.getElementById("authPanel");
+  const consentPanel = document.getElementById("consentPanel");
+  const statusEl = document.getElementById("status");
+  const authForm = document.getElementById("authForm");
+  const signInButton = document.getElementById("signInButton");
+  const signUpButton = document.getElementById("signUpButton");
+  const approveButton = document.getElementById("approveButton");
+  const denyButton = document.getElementById("denyButton");
+  const signOutButton = document.getElementById("signOutButton");
+
+  function status(message, isError = false) {
+    statusEl.textContent = message || "";
+    statusEl.classList.toggle("error", Boolean(isError));
+  }
+  function busy(value) {
+    [signInButton, signUpButton, approveButton, denyButton, signOutButton].forEach(b => {
+      if (b) b.disabled = value;
+    });
+  }
+  function showAuth() {
+    authPanel.classList.remove("hidden");
+    consentPanel.classList.add("hidden");
+  }
+  function showConsent() {
+    authPanel.classList.add("hidden");
+    consentPanel.classList.remove("hidden");
+  }
+
+  async function loadConsent() {
+    if (!authorizationId) {
+      showAuth();
+      status("The authorization request is missing its authorization_id. Start the connection again from ChatGPT.", true);
+      busy(true);
+      return;
+    }
+    const { data, error } = await supabase.auth.oauth.getAuthorizationDetails(authorizationId);
+    if (error || !data) {
+      showAuth();
+      status("Couldn't load the authorization request. Check that Supabase OAuth 2.1 and Dynamic Client Registration are enabled, then retry. " + (error?.message || ""), true);
+      return;
+    }
+    if (!("authorization_id" in data) && data.redirect_url) {
+      window.location.assign(data.redirect_url);
+      return;
+    }
+    showConsent();
+    document.getElementById("clientName").textContent = data.client?.name || "Unidentified app";
+    document.getElementById("requestTitle").textContent = "Connect " + (data.client?.name || "this app") + "?";
+    document.getElementById("redirectUri").textContent = data.redirect_uri || "Not provided";
+    const scopeBlock = document.getElementById("scopeBlock");
+    const scopesEl = document.getElementById("scopes");
+    scopesEl.replaceChildren();
+    const scopeItems = typeof data.scope === "string" ? data.scope.trim().split(/\s+/).filter(Boolean) : [];
+    if (scopeItems.length) {
+      for (const scope of scopeItems) {
+        const li = document.createElement("li");
+        li.textContent = scope;
+        scopesEl.appendChild(li);
+      }
+      scopeBlock.classList.remove("hidden");
+    } else {
+      scopeBlock.classList.add("hidden");
+    }
+    status("Signed in. Review the access above before approving.");
+  }
+
+  async function ensureAuth() {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    if (!data.session) {
+      showAuth();
+      status("Sign in to the account whose school workspace you want to connect.");
+      return;
+    }
+    await loadConsent();
+  }
+
+  authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    busy(true);
+    status("Signing in…");
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      await loadConsent();
+    } catch (error) {
+      status(error instanceof Error ? error.message : "Sign-in failed.", true);
+    } finally {
+      busy(false);
+    }
+  });
+
+  signUpButton.addEventListener("click", async () => {
+    busy(true);
+    status("Creating your account…");
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    if (!email || password.length < 8) {
+      status("Enter a valid email and a password of at least 8 characters.", true);
+      busy(false);
+      return;
+    }
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.href }
+      });
+      if (error) throw error;
+      if (data.session) {
+        await loadConsent();
+      } else {
+        status("Account created. Check your email to confirm it, then return to this page to finish connecting.");
+      }
+    } catch (error) {
+      status(error instanceof Error ? error.message : "Account creation failed.", true);
+    } finally {
+      busy(false);
+    }
+  });
+
+  approveButton.addEventListener("click", async () => {
+    busy(true);
+    status("Approving connection…");
+    try {
+      const { data, error } = await supabase.auth.oauth.approveAuthorization(authorizationId);
+      if (error) throw error;
+      if (!data?.redirect_url) throw new Error("Supabase did not return a redirect URL.");
+      window.location.assign(data.redirect_url);
+    } catch (error) {
+      status(error instanceof Error ? error.message : "Could not approve the connection.", true);
+      busy(false);
+    }
+  });
+
+  denyButton.addEventListener("click", async () => {
+    busy(true);
+    status("Denying connection…");
+    try {
+      const { data, error } = await supabase.auth.oauth.denyAuthorization(authorizationId);
+      if (error) throw error;
+      if (!data?.redirect_url) throw new Error("Supabase did not return a redirect URL.");
+      window.location.assign(data.redirect_url);
+    } catch (error) {
+      status(error instanceof Error ? error.message : "Could not deny the connection.", true);
+      busy(false);
+    }
+  });
+
+  signOutButton.addEventListener("click", async () => {
+    busy(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      window.location.reload();
+    } catch (error) {
+      status(error instanceof Error ? error.message : "Sign-out failed.", true);
+      busy(false);
+    }
+  });
+
+  if (!authorizationId) {
+    showAuth();
+    status("This page is only for completing an OAuth connection. Start from ChatGPT to get an authorization request.", true);
+    busy(true);
+  } else {
+    ensureAuth().catch(error => {
+      showAuth();
+      status(error instanceof Error ? error.message : "Couldn't start secure sign-in.", true);
+    });
+  }
+</script>
+</body>
+</html>
