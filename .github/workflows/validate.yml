@@ -1,0 +1,27 @@
+name: Validate frontend and MCP configuration
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check frontend JavaScript syntax
+        run: node --check academic-copilot.js
+      - name: Validate MCP configuration JSON
+        run: |
+          python -m json.tool LocalMCP.mcp/mcp.json > /dev/null
+          python -m json.tool LocalMCP.mcp/mcp-config.json > /dev/null

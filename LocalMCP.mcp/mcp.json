@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "myp-academic-copilot": {
+      "type": "streamable-http",
+      "url": "https://ueqqoyhtwnfhggrefyxq.supabase.co/functions/v1/school-workspace",
+      "extensions": {
+        "com.openai": {
+          "auth": {
+            "type": "oauth",
+            "client": { "mode": "dcr" },
+            "baseScopes": ["openid", "email", "profile"],
+            "defaultScopes": ["openid", "email", "profile"],
+            "oidcScopesSupported": ["openid", "email", "profile"],
+            "oidcEnabled": true
+          }
+        }
+      }
+    }
+  }
+}
