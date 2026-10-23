@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "myp-academic-copilot": {
+      "type": "streamable-http",
+      "url": "https://ueqqoyhtwnfhggrefyxq.supabase.co/functions/v1/school-workspace"
+    }
+  }
+}
