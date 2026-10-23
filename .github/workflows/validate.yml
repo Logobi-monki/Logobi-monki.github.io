@@ -1,4 +1,4 @@
-name: Validate frontend and MCP configuration
+name: Validate original frontend and MCP configuration
 
 on:
   pull_request:
@@ -19,8 +19,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Check frontend JavaScript syntax
-        run: node --check academic-copilot.js
+      - name: Check original site JavaScript syntax
+        run: node --check script.js
       - name: Validate MCP configuration JSON
         run: |
           python -m json.tool LocalMCP.mcp/mcp.json > /dev/null
