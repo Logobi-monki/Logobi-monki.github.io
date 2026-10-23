@@ -208,6 +208,9 @@ textarea:-webkit-autofill {
   padding: 0 4px !important;
 }
 </style>
+
+</script>
+
 </head>
 
 <body>
@@ -219,35 +222,37 @@ textarea:-webkit-autofill {
         Avez-vous rencontré un problème avec notre site web ou avez-vous des questions? <br />
         Remplissez le formulaire ci-dessous pour nous le faire savoir.
       </p>
-      <p class="notice">Les messages sont transmis via Formspree. N’incluez aucune information personnelle sensible.</p>
+      <h2>
+        PS: Prière ne rien envoyer par ce formulaire, car je consulte cette adresse e-mail rarement, MERCI!!
+      </h2>
     </div>
 
     <form action="https://formspree.io/f/mreazbjw" method="POST">
       <div class="field">
-        <input id="prenom" name="first_name" type="text" autocomplete="given-name" placeholder=" " required>
+        <input id="prenom" type="text" placeholder=" " required>
         <label for="prenom">Prénom (ex: Carlos)</label>
       </div>
 
       <div class="field">
-        <input id="famille" name="last_name" type="text" autocomplete="family-name" placeholder=" " required>
+        <input id="famille" type="text" placeholder=" " required>
         <label for="famille">Nom de famille (ex: Ronadona)</label>
       </div>
 
       <div class="field">
-        <input id="email" name="email" type="email" autocomplete="email" placeholder=" " required>
+        <input id="email" type="email" placeholder=" " required>
         <label for="email">Adresse e-mail (ex: carlos@xxxxx.com)</label>
       </div>
 
       <div class="field">
-        <textarea id="msg" name="message" placeholder=" " maxlength="5000" required></textarea>
+        <textarea id="msg" placeholder=" " required></textarea>
         <label for="msg">Expliquez votre problème ou question ici</label>
       </div>
       
       <button type="submit" id="submit">Soumettre</button>
-      <button type="reset" id="reset">Réinitialiser</button>
+      <button type="reset" id="reset">Réinsiliser</button>
       <input type="hidden" name="_subject" value="Nouveau message du site web">
     </form>
-    <p>Merci de nous avoir contactés.</p>
+    <p>Et voilà toute notre budget qui part😭</p>
 
     <a class="back" href="index.html">← Retour à l’accueil</a>
   </div>
