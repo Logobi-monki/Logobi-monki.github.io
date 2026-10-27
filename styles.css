@@ -79,6 +79,10 @@ body.dark-mode .top-link {
   color: #ddd;
 }
 
+body.dark-mode .quote {
+  color: #fff;
+}
+
 .toggle-switch {
   position: relative;
   width: 60px;
