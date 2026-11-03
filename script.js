@@ -2,9 +2,8 @@ const toggleSwitch = document.getElementById("dark-mode-toggle");
 const body = document.body;
 const ball = document.querySelector(".toggle-switch .ball");
 const logo = document.getElementById("logo");
-let nbRetourAccueil = 0;
-
 let toggleDisabled = false;
+let logoAnimTimeout;
 
 function disableTransitionsOnLoad() {
   body.classList.add("disable-transitions");
@@ -119,7 +118,6 @@ function setupSwipeToggle() {
   }
 }
 
-let logoAnimTimeout;
 function animateLogoClick() {
   if (logoAnimTimeout) {
     clearTimeout(logoAnimTimeout);
